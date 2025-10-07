@@ -1,0 +1,399 @@
+<style>
+/*
+  styles.css - Pixel-inspired neon/pastel palette for Hapoom RPG UI.
+  Utilizes pure CSS to render sprites, cards, buttons, and interactive feedback.
+*/
+:root {
+  --pal-bg: #0d0f1a;
+  --pal-accent: #7DF9FF;
+  --pal-positive: #A7F3D0;
+  --pal-negative: #FCA5A5;
+  --pal-card: #15192b;
+  --pal-card-border: #1f2540;
+  --pal-text: #f0f6ff;
+  --pal-muted: #7c8bae;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.hapoom-body {
+  background: var(--pal-bg);
+  color: var(--pal-text);
+  font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+  margin: 0;
+  padding: 12px;
+  image-rendering: pixelated;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100vh;
+}
+
+.hud {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(125, 249, 255, 0.1), rgba(12, 15, 32, 0.9));
+  border: 2px solid var(--pal-card-border);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 0 8px rgba(125, 249, 255, 0.2);
+}
+
+.hud-portrait {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hud-info {
+  flex: 1;
+}
+
+.hud-name {
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.hud-stats {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--pal-muted);
+}
+
+.stat strong {
+  color: var(--pal-accent);
+}
+
+.panel {
+  background: var(--pal-card);
+  border: 2px solid var(--pal-card-border);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 6px 18px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.panel-title {
+  font-size: 14px;
+  text-transform: uppercase;
+  color: var(--pal-accent);
+  margin-bottom: 12px;
+}
+
+.panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field.inline {
+  flex-direction: row;
+  align-items: center;
+}
+
+.field input[type="text"] {
+  background: rgba(15, 19, 38, 0.95);
+  border: 2px solid var(--pal-card-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--pal-text);
+  font-size: 14px;
+  outline: none;
+}
+
+.class-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.class-card {
+  border: 2px solid var(--pal-card-border);
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  background: rgba(16, 20, 38, 0.9);
+  transition: transform 0.1s ease;
+}
+
+.class-card.selected {
+  border-color: var(--pal-accent);
+  box-shadow: 0 0 8px rgba(125, 249, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.class-card:hover {
+  border-color: var(--pal-accent);
+}
+
+.class-card .class-name {
+  font-size: 14px;
+  color: var(--pal-accent);
+}
+
+.class-card .class-desc {
+  font-size: 12px;
+  color: var(--pal-muted);
+}
+
+.pixel-btn {
+  position: relative;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, rgba(125, 249, 255, 0.6), rgba(125, 249, 255, 0.2));
+  color: var(--pal-text);
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: transform 0.06s ease, box-shadow 0.1s;
+}
+
+.pixel-btn.primary {
+  background: linear-gradient(180deg, rgba(167, 243, 208, 0.7), rgba(31, 41, 55, 0.8));
+  color: #122223;
+}
+
+.pixel-btn:before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+}
+
+.pixel-btn:hover {
+  box-shadow: 0 0 6px rgba(125, 249, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.pixel-btn:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+.pixel-btn.choice {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.event-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.event-icon {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.event-header {
+  text-align: center;
+}
+
+.event-title {
+  font-size: 16px;
+  color: var(--pal-accent);
+  margin-bottom: 6px;
+}
+
+.event-desc {
+  font-size: 13px;
+  color: var(--pal-text);
+  line-height: 1.4;
+}
+
+.event-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.queue-indicator {
+  font-size: 12px;
+  color: var(--pal-muted);
+}
+
+.log-tail {
+  font-size: 11px;
+  color: rgba(240, 246, 255, 0.8);
+  background: rgba(11, 14, 30, 0.7);
+  border-radius: 6px;
+  padding: 8px;
+  max-height: 120px;
+  overflow-y: auto;
+  border: 1px solid rgba(125, 249, 255, 0.15);
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 2px solid var(--pal-card-border);
+  background: rgba(9, 12, 26, 0.95);
+  color: var(--pal-text);
+  font-size: 13px;
+  box-shadow: 0 0 12px rgba(125, 249, 255, 0.3);
+  animation: toast-pop 0.3s ease;
+}
+
+@keyframes toast-pop {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 6, 14, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 4px solid rgba(125, 249, 255, 0.2);
+  border-top-color: var(--pal-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
+}
+
+/* Simple CSS pixel sprites */
+.px-sprite {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+}
+
+.px-sprite:before,
+.px-sprite:after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* Hero sprite using gradient blocks */
+.px-sprite.hero {
+  background: none;
+}
+
+.px-sprite.hero:before {
+  box-shadow:
+    16px 4px 0 0 #243148,
+    20px 4px 0 0 #243148,
+    24px 4px 0 0 #243148,
+    12px 8px 0 0 #3a4d6f,
+    16px 8px 0 0 #7DF9FF,
+    20px 8px 0 0 #7DF9FF,
+    24px 8px 0 0 #3a4d6f,
+    12px 12px 0 0 #3a4d6f,
+    16px 12px 0 0 #A7F3D0,
+    20px 12px 0 0 #A7F3D0,
+    24px 12px 0 0 #3a4d6f,
+    12px 16px 0 0 #2b3a54,
+    16px 16px 0 0 #fffbf5,
+    20px 16px 0 0 #fffbf5,
+    24px 16px 0 0 #2b3a54,
+    12px 20px 0 0 #2b3a54,
+    16px 20px 0 0 #243148,
+    20px 20px 0 0 #243148,
+    24px 20px 0 0 #2b3a54,
+    12px 24px 0 0 #1a2435,
+    16px 24px 0 0 #1a2435,
+    20px 24px 0 0 #1a2435,
+    24px 24px 0 0 #1a2435;
+}
+
+.px-sprite.slime:before {
+  box-shadow:
+    10px 22px 0 0 rgba(125, 249, 255, 0.9),
+    14px 18px 0 0 rgba(125, 249, 255, 0.7),
+    18px 16px 0 0 rgba(167, 243, 208, 0.7),
+    22px 18px 0 0 rgba(125, 249, 255, 0.8),
+    26px 22px 0 0 rgba(125, 249, 255, 0.5),
+    18px 26px 0 0 rgba(125, 249, 255, 0.9),
+    22px 26px 0 0 rgba(125, 249, 255, 0.9);
+}
+
+.px-sprite.treasure:before {
+  box-shadow:
+    12px 16px 0 0 #8d6b3a,
+    16px 16px 0 0 #dba34b,
+    20px 16px 0 0 #dba34b,
+    24px 16px 0 0 #8d6b3a,
+    12px 20px 0 0 #fcd34d,
+    16px 20px 0 0 #fde68a,
+    20px 20px 0 0 #fde68a,
+    24px 20px 0 0 #fcd34d,
+    12px 24px 0 0 #8d6b3a,
+    16px 24px 0 0 #dba34b,
+    20px 24px 0 0 #dba34b,
+    24px 24px 0 0 #8d6b3a;
+}
+
+.px-sprite.mystic:before {
+  box-shadow:
+    12px 12px 0 0 rgba(125, 249, 255, 0.7),
+    16px 8px 0 0 rgba(167, 243, 208, 0.6),
+    20px 12px 0 0 rgba(125, 249, 255, 0.8),
+    16px 16px 0 0 rgba(125, 249, 255, 0.6),
+    20px 20px 0 0 rgba(167, 243, 208, 0.5);
+}
+
+#event-icon .px-sprite {
+  transform: scale(1.4);
+}
+
+.panel-debug {
+  border-style: dashed;
+  border-color: rgba(125, 249, 255, 0.5);
+  background: rgba(19, 23, 42, 0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pixel-btn,
+  .spinner {
+    animation-duration: 1.5s !important;
+    transition-duration: 0 !important;
+  }
+}
+</style>
