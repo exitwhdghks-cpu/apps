@@ -1,11 +1,9 @@
-/**
- * Code.gs - Backend logic for Hapoom RPG Spreadsheet Simulator.
- * Handles sheet setup, player lifecycle, event resolution, RNG, and menu bindings.
- */
+// Code.gs - Backend logic for Hapoom RPG Spreadsheet Simulator.
+// Handles sheet setup, player lifecycle, event resolution, RNG, and menu bindings.
 
 // ----------------------------- CONSTANTS ----------------------------------
 const RPG_CONFIG = {
-  menuName: '🎮 Hapoom RPG',
+  menuName: '\uD83C\uDFAE Hapoom RPG',
   menuStartLabel: '게임 시작/계속',
   userPropertyKey: 'HAPOON_RPG_PLAYER_ID',
   adminEmails: ['admin@example.com'], // TODO: Replace with real admin emails.
@@ -119,7 +117,7 @@ function buildSampleEvents() {
       title: '새벽빛 수풀',
       desc: '차가운 새벽 공기 속에서 반짝이는 이슬. 먼 곳에서 작은 울음소리가 들려옵니다.',
       choiceA: { text: '울음소리를 조사한다', effect: { rolls: [ { chance: 0.6, hp: -2, xp: 2, resultText: '숨어 있던 슬라임이 튀어나와 약간의 피해를 입었습니다.' }, { chance: 0.4, gold: 4, resultText: '잃어버린 지갑을 찾았습니다.' } ], flagAdd: ['met_slime'], tagsBoost: ['combat'] } },
-      choiceB: { text: '조용히 명상한다', effect: { hp: +2, xp: 1, resultText: '자연과 호흡하며 체력을 회복했습니다.', next: ['E_SHRINE_WHISPER'] } },
+      choiceB: { text: '조용히 명상한다', effect: { hp: 2, xp: 1, resultText: '자연과 호흡하며 체력을 회복했습니다.', next: ['E_SHRINE_WHISPER'] } },
       choiceC: { text: '길을 급히 떠난다', effect: { xp: 1, resultText: '조심스럽게 발걸음을 옮겼습니다.', next: ['E_ROAD_MERCHANT'], weightShift: { town: 1.2 } } },
       tags: 'opening,forest',
       weight: 5
@@ -138,9 +136,9 @@ function buildSampleEvents() {
       eventId: 'E_TOWN_SHOP',
       title: '작은 노점상',
       desc: '낡은 수레에서 팔을 흔드는 상인.',
-      choiceA: { text: '치유 허브 구매(-4G)', effect: { gold: -4, hp: +4, resultText: '허브 향이 기분 좋게 퍼집니다.', flagAdd: ['met_merchant'] } },
+      choiceA: { text: '치유 허브 구매(-4G)', effect: { gold: -4, hp: 4, resultText: '허브 향이 기분 좋게 퍼집니다.', flagAdd: ['met_merchant'] } },
       choiceB: { text: '정보 교환', effect: { gold: -2, xp: 2, resultText: '상인에게서 귀중한 정보를 들었습니다.', next: ['E_RARE_RELIC'] } },
-      choiceC: { text: '흥정을 시도한다', effect: { rolls: [ { chance: 0.5, gold: +3, resultText: '흥정에 성공해 보너스를 받았습니다!' }, { chance: 0.5, gold: -3, resultText: '흥정 실패! 상인이 화를 냈습니다.' } ], flagAdd: ['met_merchant'] } },
+      choiceC: { text: '흥정을 시도한다', effect: { rolls: [ { chance: 0.5, gold: 3, resultText: '흥정에 성공해 보너스를 받았습니다!' }, { chance: 0.5, gold: -3, resultText: '흥정 실패! 상인이 화를 냈습니다.' } ], flagAdd: ['met_merchant'] } },
       tags: 'town,merchant',
       weight: 6
     },
@@ -149,7 +147,7 @@ function buildSampleEvents() {
       title: '빛나는 유물',
       desc: '모래 속에서 은은한 빛이 새어 나옵니다.',
       choiceA: { text: '유물을 집어 든다', effect: { rolls: [ { chance: 0.5, xp: 5, gold: 6, resultText: '고대 유물이 당신을 인정합니다.' }, { chance: 0.5, hp: -4, resultText: '저주가 발동하여 몸이 얼어붙습니다.' } ], tagsBoost: ['rare'] } },
-      choiceB: { text: '조심스럽게 봉인', effect: { xp: 3, def: +1, resultText: '봉인을 재정비하여 방어력을 높였습니다.' } },
+      choiceB: { text: '조심스럽게 봉인', effect: { xp: 3, def: 1, resultText: '봉인을 재정비하여 방어력을 높였습니다.' } },
       choiceC: { text: '무시하고 간다', effect: { xp: 1, resultText: '무사히 지나쳤습니다.', flagRemove: ['met_merchant'] } },
       tags: 'rare,explore',
       weight: 3
@@ -158,9 +156,9 @@ function buildSampleEvents() {
       eventId: 'E_SHRINE_WHISPER',
       title: '속삭이는 사당',
       desc: '돌기둥 사이로 희미한 빛과 속삭임이 들립니다.',
-      choiceA: { text: '기도한다', effect: { xp: 2, hp: +3, resultText: '따스한 빛이 몸을 감싸 안았습니다.' } },
+      choiceA: { text: '기도한다', effect: { xp: 2, hp: 3, resultText: '따스한 빛이 몸을 감싸 안았습니다.' } },
       choiceB: { text: '공물을 바친다(-3G)', effect: { gold: -3, xp: 4, resultText: '사당이 기뻐하며 힘을 나누어 줍니다.', next: ['E_BLESSING_LIGHT'] } },
-      choiceC: { text: '조사한다', effect: { rolls: [ { chance: 0.4, xp: 5, atk: +1, resultText: '숨겨진 룬을 해독했습니다.' }, { chance: 0.6, hp: -2, resultText: '봉인을 건드려 마력이 새어나왔습니다.' } ] } },
+      choiceC: { text: '조사한다', effect: { rolls: [ { chance: 0.4, xp: 5, atk: 1, resultText: '숨겨진 룬을 해독했습니다.' }, { chance: 0.6, hp: -2, resultText: '봉인을 건드려 마력이 새어나왔습니다.' } ] } },
       tags: 'mystic,rare',
       weight: 4
     },
@@ -168,8 +166,8 @@ function buildSampleEvents() {
       eventId: 'E_ROAD_MERCHANT',
       title: '길 잃은 상단',
       desc: '수레가 넘어져 짐이 흩어져 있습니다.',
-      choiceA: { text: '짐을 도와준다', effect: { xp: 2, gold: +2, resultText: '상인이 보답으로 동전을 줍니다.', flagAdd: ['met_merchant'] } },
-      choiceB: { text: '짐을 슬쩍 챙긴다', effect: { rolls: [ { chance: 0.5, gold: +5, resultText: '아무도 알아차리지 못했습니다.' }, { chance: 0.5, hp: -3, resultText: '상단의 경비에게 붙잡혔습니다!' } ] } },
+      choiceA: { text: '짐을 도와준다', effect: { xp: 2, gold: 2, resultText: '상인이 보답으로 동전을 줍니다.', flagAdd: ['met_merchant'] } },
+      choiceB: { text: '짐을 슬쩍 챙긴다', effect: { rolls: [ { chance: 0.5, gold: 5, resultText: '아무도 알아차리지 못했습니다.' }, { chance: 0.5, hp: -3, resultText: '상단의 경비에게 붙잡혔습니다!' } ] } },
       choiceC: { text: '길 안내만 한다', effect: { xp: 1, resultText: '지도를 설명해 주었습니다.', next: ['E_TOWN_SHOP'] } },
       tags: 'town,common',
       weight: 5
@@ -179,7 +177,7 @@ function buildSampleEvents() {
       title: '고대 함정',
       desc: '발밑에서 바람이 새어나오는 함정 구역.',
       choiceA: { text: '기어가며 통과', effect: { hp: -1, xp: 2, resultText: '몇 번 긁혔지만 지나갔습니다.' } },
-      choiceB: { text: '함정 해체 시도', effect: { rolls: [ { chance: 0.4, gold: +4, xp: 3, resultText: '함정을 해제하고 보물을 챙겼습니다.' }, { chance: 0.6, hp: -4, resultText: '폭발! 큰 피해를 입었습니다.' } ] } },
+      choiceB: { text: '함정 해체 시도', effect: { rolls: [ { chance: 0.4, gold: 4, xp: 3, resultText: '함정을 해제하고 보물을 챙겼습니다.' }, { chance: 0.6, hp: -4, resultText: '폭발! 큰 피해를 입었습니다.' } ] } },
       choiceC: { text: '되돌아간다', effect: { xp: 1, resultText: '안전을 우선시했습니다.', flagRemove: ['trap_warned'] } },
       tags: 'trap,explore',
       weight: 4
@@ -188,9 +186,9 @@ function buildSampleEvents() {
       eventId: 'E_FOREST_SPIRIT',
       title: '숲의 정령',
       desc: '작은 정령이 반짝이며 주변을 맴돕니다.',
-      choiceA: { text: '손을 내민다', effect: { rolls: [ { chance: 0.5, hp: +5, resultText: '정령이 치유의 힘을 나눠줍니다.' }, { chance: 0.5, hp: -3, resultText: '정령이 장난을 쳐 체력이 빠졌습니다.' } ] } },
+      choiceA: { text: '손을 내민다', effect: { rolls: [ { chance: 0.5, hp: 5, resultText: '정령이 치유의 힘을 나눠줍니다.' }, { chance: 0.5, hp: -3, resultText: '정령이 장난을 쳐 체력이 빠졌습니다.' } ] } },
       choiceB: { text: '정령과 거래', effect: { gold: -2, xp: 3, resultText: '정령이 소원을 들어주었습니다.', flagAdd: ['spirit_friend'] } },
-      choiceC: { text: '정령을 포획', effect: { hp: -2, atk: +1, resultText: '정령의 힘을 장비에 봉인했습니다.', flagRemove: ['spirit_friend'] } },
+      choiceC: { text: '정령을 포획', effect: { hp: -2, atk: 1, resultText: '정령의 힘을 장비에 봉인했습니다.', flagRemove: ['spirit_friend'] } },
       tags: 'mystic,rare',
       weight: 3
     },
@@ -198,8 +196,8 @@ function buildSampleEvents() {
       eventId: 'E_BLESSING_LIGHT',
       title: '빛의 가호',
       desc: '사당에서 받아온 부적이 따스하게 빛납니다.',
-      choiceA: { text: '부적을 사용한다', effect: { hp: +6, xp: 2, resultText: '심장이 강하게 뛰며 힘이 솟습니다.', flagRemove: ['met_merchant'] } },
-      choiceB: { text: '부적을 팔아버린다', effect: { gold: +6, resultText: '상인에게 고가에 팔았습니다.' } },
+      choiceA: { text: '부적을 사용한다', effect: { hp: 6, xp: 2, resultText: '심장이 강하게 뛰며 힘이 솟습니다.', flagRemove: ['met_merchant'] } },
+      choiceB: { text: '부적을 팔아버린다', effect: { gold: 6, resultText: '상인에게 고가에 팔았습니다.' } },
       choiceC: { text: '선물을 나눈다', effect: { gold: -2, xp: 3, resultText: '빛을 나누며 명성을 얻었습니다.', flagAdd: ['blessed'] } },
       tags: 'rare,town',
       weight: 2
@@ -209,7 +207,7 @@ function buildSampleEvents() {
       title: '밤의 습격',
       desc: '어둠 속에서 그림자가 달려듭니다.',
       choiceA: { text: '즉각 반격', effect: { rolls: [ { chance: 0.6, xp: 4, gold: 3, resultText: '습격자를 제압했습니다.' }, { chance: 0.4, hp: -5, resultText: '기습을 막지 못했습니다.' } ], tagsBoost: ['combat'] } },
-      choiceB: { text: '방패를 들고 버틴다', effect: { hp: -2, def: +1, resultText: '피해는 있었지만 방어를 익혔습니다.' } },
+      choiceB: { text: '방패를 들고 버틴다', effect: { hp: -2, def: 1, resultText: '피해는 있었지만 방어를 익혔습니다.' } },
       choiceC: { text: '연막탄으로 탈출', effect: { gold: -1, xp: 2, resultText: '연막을 치고 빠져나왔습니다.' } },
       tags: 'combat,trap',
       weight: 5
@@ -218,7 +216,7 @@ function buildSampleEvents() {
       eventId: 'E_LOST_CHILD',
       title: '길 잃은 아이',
       desc: '울고 있는 아이가 길모퉁이에 앉아 있습니다.',
-      choiceA: { text: '집으로 데려다준다', effect: { xp: 3, gold: +2, resultText: '가족이 감사의 선물을 주었습니다.', flagAdd: ['town_ally'] } },
+      choiceA: { text: '집으로 데려다준다', effect: { xp: 3, gold: 2, resultText: '가족이 감사의 선물을 주었습니다.', flagAdd: ['town_ally'] } },
       choiceB: { text: '용기를 북돋운다', effect: { xp: 2, resultText: '아이에게 용기를 심어주었습니다.' } },
       choiceC: { text: '무시한다', effect: { resultText: '뒤돌아보지 않았습니다.', flagRemove: ['town_ally'] } },
       tags: 'town,story',
