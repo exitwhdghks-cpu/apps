@@ -1,0 +1,83 @@
+<!--
+  ui.html - Root HTML template for Hapoom RPG Sidebar UI.
+  Provides layout containers for creation view, gameplay view, HUD, logs, and debug controls.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= HtmlService.createHtmlOutputFromFile('styles.css').getContent(); ?>
+  </head>
+  <body class="hapoom-body">
+    <div id="app" class="app-shell">
+      <div class="hud" id="hud" hidden>
+        <div class="hud-portrait" id="hud-portrait"></div>
+        <div class="hud-info">
+          <div class="hud-name" id="hud-name"></div>
+          <div class="hud-stats">
+            <span class="stat" id="hud-hp"></span>
+            <span class="stat" id="hud-gold"></span>
+            <span class="stat" id="hud-xp"></span>
+            <span class="stat" id="hud-level"></span>
+          </div>
+        </div>
+      </div>
+
+      <section id="creation" class="panel panel-creation" hidden>
+        <div class="panel-title">새로운 모험가</div>
+        <div class="panel-content">
+          <label class="field">
+            <span>이름</span>
+            <input type="text" id="input-name" maxlength="18" placeholder="네온빛 이름" autofocus>
+          </label>
+          <div class="class-grid" id="class-grid"></div>
+          <button id="btn-create" class="pixel-btn primary">모험 시작</button>
+        </div>
+      </section>
+
+      <section id="gameplay" class="panel panel-event" hidden>
+        <div class="event-card">
+          <div class="event-icon" id="event-icon"></div>
+          <div class="event-header">
+            <div class="event-title" id="event-title"></div>
+            <div class="event-desc" id="event-desc"></div>
+          </div>
+          <div class="event-choices">
+            <button class="pixel-btn choice" data-choice="A" id="choice-A"></button>
+            <button class="pixel-btn choice" data-choice="B" id="choice-B"></button>
+            <button class="pixel-btn choice" data-choice="C" id="choice-C"></button>
+          </div>
+        </div>
+        <div class="event-footer">
+          <div class="queue-indicator">다음 카드: <span id="queue-count">0</span></div>
+          <div class="log-tail" id="log-tail"></div>
+        </div>
+      </section>
+
+      <section id="result-toast" class="toast" hidden></section>
+
+      <section id="debug-panel" class="panel panel-debug" hidden>
+        <div class="panel-title">디버그</div>
+        <div class="panel-content">
+          <div class="field">
+            <label for="debug-event">이벤트 강제</label>
+            <input type="text" id="debug-event" placeholder="이벤트 ID">
+            <button class="pixel-btn" id="btn-force-event">큐에 추가</button>
+          </div>
+          <div class="field inline">
+            <button class="pixel-btn" id="btn-heal">HP 회복</button>
+          </div>
+        </div>
+      </section>
+
+      <div id="loading" class="loading-overlay" hidden>
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <script>
+      const BOOTSTRAP = { version: <?= data.version ?> };
+    </script>
+    <?!= HtmlService.createHtmlOutputFromFile('client.js').getContent(); ?>
+  </body>
+</html>
